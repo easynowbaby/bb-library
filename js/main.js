@@ -56,13 +56,8 @@
 		initialize: function() {
 			this.list = this.$("#contacts");			
 			this.collection.on('sync', this.render, this);
-			this.collection.on('sync', this.setListeners, this);
-			this.collection.on('change', this.change, this);		
-		},
-
-		change: function() {
-			console.log('change')
-		},
+			this.collection.on('sync', _.once(this.setListeners), this);					
+		},		
 
 		setListeners: function() {
 			this.collection.on('add', this.renderContact, this);
@@ -71,42 +66,53 @@
 
 		render: function() {			
 			this.list.empty();					 		
-			this.collection.each(this.renderContact, this);
-			autosize($('textarea')); 		
+			this.collection.each(this.renderContact, this);			 		
   		return this;
 		},
 
 		renderContact: function(contact) {
-			var contactView = new App.Views.Contact({
+			window.contactView = new App.Views.Contact({
         model: contact
       });     
       this.list.append(contactView.render().el);
+      // init autosizing of textareas
+			autosize($('textarea'));
+			// set modal trigger
+			$('.modal-trigger').leanModal();		
 		},
 
 		events: {
 			'click #add': 'addContact',
-			'click .delete': 'deleteContact',
+			'click .modal-trigger': 'saveDeleteId',
+			'click .delete-modal' : 'deleteContact'					
 		},
 
 		addContact: function(e) {
 			e.preventDefault();
 			var formData = {};
 
-	    $( '#add-contact div' ).children( 'input' ).each( function( i, el ) {
+	    $( '#add-contact div' ).children( 'input, textarea' ).each( function( i, el ) {
 	        if( $( el ).val() != '' )
 	        {
 	            formData[ el.id ] = $( el ).val();
 	        }
-	    });
+	    });    
 
 	    this.collection.create( formData );
 
+		},	
+
+		saveDeleteId: function(e) {
+			this.deleteId = e.target.parentElement.previousSibling.previousSibling.innerHTML;			
 		},
 
-		deleteContact: function(e) {
-  		var contactId = $(e.target).siblings('#id').html();
-  		this.collection.remove(this.collection.where({id: contactId}));
+		deleteContact: function() {
+			var m = this.collection.where({id: this.deleteId});
+			this.collection.remove(m);
+			console.log(this.deleteId)
 		},
+
+
 
 	});
 
@@ -120,40 +126,40 @@
 
 		render: function() {		  	
 			var template =  this.template( this.model.toJSON() );
-			this.$el.html( template );			
+			this.$el.html( template );					
 			return this;
 		},
 
 		events: {
 			'click .save': 'edit',
-			//'keypress li': 'updateOnEnter',
+			'keypress input, textarea': 'updateOnEnter',
+			//'click .delete': 'deleteContact'
 		},
 
 		updateOnEnter: function(e) {
-			if (e.which === 13) {
-				var value = $(e.target).val();			
-				var trimmedValue = value.trim();
-				var key = $(e.target).parent('li').attr('class');				
-				this.edit(key, value);
+			if (e.which === 13 && e.target.localName !== 'textarea') {
+			console.log('good');						
+				this.edit();
 			}
 		},
 
 		edit: function() {
-
 			var self = this;
-
 			var li = this.$("li");
-			  li.each(function(i) {
+		  li.each(function(i) {
 				var value = $(this).find('[type="text"]').val();						
 				var trimmedValue = value.trim();				
-				var key = $(this).data('key');
-				console.log(trimmedValue);
-				console.log(key);				
+				var key = $(this).data('key');								
 				if (trimmedValue) {
-					self.model.set( key, trimmedValue );	
+					self.model.set( key, trimmedValue );					
 				}				
-			});			
+			});	
+			Materialize.toast('Saved!', 2000);		
 		},
+
+		// deleteContact: function() {			
+		// 	this.model.destroy();
+		// },		
 
 	});
 
@@ -174,8 +180,9 @@
 
 })();
 
-$( document ).ready(function() {
-    
+$(document).ready(function(){
+  // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
+  $('.modal-trigger').leanModal();
 });
 
 

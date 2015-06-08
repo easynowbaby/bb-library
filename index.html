@@ -12,7 +12,19 @@
 
 <body>
 
-<div id="app" class='row'>
+<div id="app" class='row'>	
+
+		<!-- Modal Structure -->
+		<div id='modal1' class="modal">
+		  <div class="modal-content">
+		    <h4>Do you really want to delete this contact?</h4>
+		    <p>This action is permanent.</p>
+		  </div>
+		  <div class="modal-footer">
+		    <a href="#!" class="delete-modal modal-action modal-close waves-effect waves-green btn-flat">Delete</a>
+		    <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Cancel</a>
+		  </div>
+		</div>	
 		
 		<aside id='sidebar' class='col s12 m4 l3 card white'>
 		<div class="card-content">
@@ -20,11 +32,16 @@
 			<form id="add-contact">
 	        <div>
 	        		<label for="name">Name and Surname</label> <input type="text" id="name"/>
-	            <label for="address">Address</label> <input type="text" name="address" id="address"/>
+	            <div><label for="address">Address</label> <textarea type="text" name="address" id="address"/></textarea></div>
 	            <label for="email">Email</label> <input type="text" name="email" id="email"/>
 	            <label for="tel">Telephone</label> <input type="text" name="tel" id="tel"/>
 	            <button class='btn' id="add" >Add</button>
 	        </div>
+	       <!--  <div class="input-field">
+	        	<i class="mdi-action-search prefix"></i>
+	        	<label for="search">Search</label>
+	        	<input type="text" name="search" id="search"/>
+	        </div> -->
 	    </form>
 	    </div>
 		</aside>
@@ -45,14 +62,16 @@
 <li data-key='address' class="input-field"><i class="mdi-communication-location-on prefix"></i><textarea type="text"><%= address %></textarea></li>
 <li data-key='email' class="input-field"><i class="mdi-communication-email prefix"></i><input type="text" value="<%= email %>"/></li>
 <li data-key='tel' class="input-field"><i class="mdi-communication-phone prefix"></i><input type="text" value="<%= tel %>"/></li>
-<span id='id'><%= id %></span>
+<span class='id'><%= id %></span>
 
 <div class="card-action">
-	<button class="delete btn">Delete</button>
+	<button href="#modal1" class="btn modal-trigger">Delete</button>
 	<button class="save btn">Save</button>
 </div>
 
 </div>
+
+
 
 </script>
 
@@ -76,6 +95,8 @@
 <script src="https://cdn.firebase.com/libs/backbonefire/0.5.1/backbonefire.js"></script>
 
 <script src="js/autosize.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.96.1/js/materialize.min.js"></script>
 
 <script type="text/javascript" src="js/main.js"></script>
 
