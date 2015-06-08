@@ -37,8 +37,7 @@
 
 	App.Collections.Contacts = Backbone.Firebase.Collection.extend({
 		url: 'https://myfirsttodo.firebaseio.com/contacts',
-		model: App.Models.Contact,
-		//autoSync: false // this is true by default
+		model: App.Models.Contact,		
 	});
 
 	/******************
@@ -108,8 +107,7 @@
 
 		deleteContact: function() {
 			var m = this.collection.where({id: this.deleteId});
-			this.collection.remove(m);
-			console.log(this.deleteId)
+			this.collection.remove(m);			
 		},
 
 
@@ -132,8 +130,7 @@
 
 		events: {
 			'click .save': 'edit',
-			'keypress input, textarea': 'updateOnEnter',
-			//'click .delete': 'deleteContact'
+			'keypress input, textarea': 'updateOnEnter',			
 		},
 
 		updateOnEnter: function(e) {
@@ -155,11 +152,7 @@
 				}				
 			});	
 			Materialize.toast('Saved!', 2000);		
-		},
-
-		// deleteContact: function() {			
-		// 	this.model.destroy();
-		// },		
+		},			
 
 	});
 
